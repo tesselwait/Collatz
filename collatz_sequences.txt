@@ -1,9 +1,1 @@
-Closest Permutation: 0000000011111, Ratio to starting value: 0.96131875, n=13
-
-Closest Permutation: 000000000000110111111, Ratio to starting value: 0.9831033203125, n=21
-
-Closest Permutation: 000000000000100011111111, Ratio to starting value: 0.989310009765625, n=24
-
-Closest Permutation: 000000010000000001101111111, Ratio to starting value: 0.9991302856445312, n=27
-
-Closest Permutation: 00010000000001010110111101, Ratio to starting value: 0.9999997436523438, n=26
+Closest Permutation: 0000101010101, Ratio to starting value: 0.9505375, n=13
