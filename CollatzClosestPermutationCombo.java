@@ -26,29 +26,14 @@ public class CollatzClosestPermutationCombo {
 			permutationList = new ArrayList<String>();
 			for(String a: list) {
 				permutationList.add(a+"0");
-				permutationList.add(a+"1");
+				if(a.charAt(a.length()-1)!='1') //all odd permutations in Collatz are followed by at least one even permutation.  Filters consecutive '1'
+					permutationList.add(a+"1");
 			}
 			return generatePermutations(permutationList, x-1);
 		}
 		return list;
 	}
 
-	public ArrayList<String> filterConsecutiveOdds(ArrayList<String> list){ //all odd permutations in Collatz are followed by at least one even permutation
-		ArrayList<String> filteredList = new ArrayList<String>();
-		boolean add = true;
-		for(String a: list) {
-			for(int i=1; i<a.length(); i++) {
-				if(a.charAt(i)=='1'&&a.charAt(i-1)=='1'){
-					add=false;
-				}
-				
-			}
-			if(add)
-				filteredList.add(a);
-			add=true;
-		}
-		return filteredList;
-	}
 	
 	public static void main(String[] args) {
 		double allClosest = Double.MAX_VALUE;
@@ -56,7 +41,7 @@ public class CollatzClosestPermutationCombo {
 		String allClosestSequence = "";
 		for(int n=26; n<27; n++) {
 			CollatzClosestPermutationCombo test = new CollatzClosestPermutationCombo(startingValue, n);
-			test.permutationList = test.filterConsecutiveOdds(test.generatePermutations(test.permutationList, test.permutations-1));
+			test.permutationList = test.generatePermutations(test.permutationList, test.permutations-1);
 	//		System.out.println("Permutation list generated");
 		/**	for(String str: test.permutationList) {
 				System.out.println(str);
