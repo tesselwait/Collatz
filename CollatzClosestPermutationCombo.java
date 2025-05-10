@@ -34,6 +34,45 @@ public class CollatzClosestPermutationCombo {
 		return list;
 	}
 
+	public ArrayList<Object> baseCompletesPermutationSequence(double baseNum, String sequence) {  // runs a test value against a move sequence until a odd/even mismatch.
+		double base = baseNum;                                                                // returns full sequence boolean and number of matched steps
+		ArrayList<Object> data = new ArrayList<Object>();
+		for(int j=0; j<sequence.length(); j++) {
+			if(sequence.charAt(j)=='1') {
+				if(base%2==1) {
+				//	System.out.print(""+base+"-> ");
+					base=(3*base)+1;
+				//	System.out.println("1-> X: "+base);
+				}
+				else {
+				//	System.out.println(j);
+					data.add(false);
+					data.add(j);
+					return data;
+				}
+			}
+			else
+			{
+				if(base%2==0) {
+					//System.out.print(""+base+"-> ");
+					base=(base/2);
+				//	System.out.println("0-> X: "+base);
+				}
+				else {
+					//System.out.println(j);
+					data.add(false);
+					data.add(j);
+					return data;
+				}
+			}
+			if(j==sequence.length()-1) {
+				data.add(true);
+				data.add(j);
+			}
+		}
+		return data;
+	}
+
 	
 	public static void main(String[] args) {
 		double allClosest = Double.MAX_VALUE;
