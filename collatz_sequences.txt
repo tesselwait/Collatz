@@ -4,5 +4,5 @@ Closest Permutation: 1010101010101010101010100000000, Ratio to starting value: 0
 
 Combining several slightly over/under strings to get closer to 1: 2*"n=31" + "n=13" + 2*"n=31"
 Closest Permutation: 10101010101010101010101000000000000000010101010101010101010101000010101010100000000101010101010101010101010000000010101010101010101010101, Ratio to starting value: 1.0020981557832316, n=137
-In base values under 100,000,000,000 best match: Base: 15,289,356,287 matches for 63/137 permutations.
+In base values under 1,000,000,000,000 best match: Base: 565,045,170,175 matches for 65/137 permutations.
 
