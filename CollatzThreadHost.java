@@ -58,7 +58,7 @@ public class CollatzThreadHost {
 		int cores = Runtime.getRuntime().availableProcessors();
 		CollatzThreadHost crawler = new CollatzThreadHost(totalTestStrings, totalTestStrings/(1.0*cores));
 		for(int i=0; i<cores; i++) {
-			CollatzClosestPermutationCombo3 object = new CollatzClosestPermutationCombo3(0.0+i*crawler.threadSet, crawler.threadSet, "10101010101010101010101000000000000000010101010101010101010101000010101010100000000101010101010101010101010000000010101010101010101010101", "Thread "+i, crawler);
+			CollatzClosestPermutationCombo object = new CollatzClosestPermutationCombo(0.0+i*crawler.threadSet, crawler.threadSet, "10101010101010101010101000000000000000010101010101010101010101000010101010100000000101010101010101010101010000000010101010101010101010101", "Thread "+i, crawler);
 			object.start();
 		}
 		while(crawler.getThreadsClosed()<cores){
