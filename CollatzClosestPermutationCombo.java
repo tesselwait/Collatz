@@ -1,24 +1,37 @@
 import java.util.*;
-public class CollatzClosestPermutationCombo {
-
+public class CollatzClosestPermutationCombo extends Thread {
 	// Thinking of Collatz permutations as a sequence of ratio multiplications, the same sequence of permutations enacted on any two starting values(that results in the same
 	// sequence of "odd or even" permutations) should have an end result that is a similar fraction of the original seed value.  The deviations being caused by the "+1" component.
 	// In a closed Collatz loop the end result is 1/1 of the starting value, therefore when searching for looping Collatz values an alternative option to crawling starting values
 	// is to crawl permutation combinations where the end value starting value fraction is closest to 1/1.  When testing these permutations you can either start with 1, being a substitution
-	// for an arbitrary point on the number line and ignore the "+1" or you can pick out some reasonably high starting seed eg. 10,000 knowing  ahead of time that Collatz does not loop 
+	// for an arbitrary point on the number line and ignore the "+1" or you can pick out some reasonably high starting seed eg. 100,000,000 knowing  ahead of time that Collatz does not loop 
 	// up to very high values and when running the permutations you simply ignore whether the sequence numbers are odd or even and follow a predetermined permutation sequence.  After
 	// running some number of permutation sequences on your test value you then pick out the one that ends closest to the starting value and then try to pick out untested values
 	// very high in the number line that will follow the same sequence given some structural similarity to an already tested value with the "closest to 1/1" permutation combination.
-	public int permutations;
-	public double seed;
+	// Two or more "Close to 1" sequences can be combined end to end, creating another search problem for best offsetting ratios beyond the range of exhaustive permutation search.
+	// This method quickly produced a "1.002.." permutation.  A promising feature of this approach is that starting values can be crawled running only the number of steps that match
+	// the sequence allowing search orders of magnitude higher in the number line per unit of compute.  The biggest obstacle thus far is the closest sequence best match was only about
+	// half of a 137 permutation sequence after testing up to a trillion.
+	public double seed, permutations;
 	public ArrayList<String> permutationList;
+	public CollatzThreadHost host;
+	public String testBase, threadName;
+	public boolean dataOffloaded;
+	public Random gen;
+	public ArrayList<Object> threadData;	
 	
-	public CollatzClosestPermutationCombo(double a, int b) {
+	public CollatzClosestPermutationCombo(double a, int b, String testSequence, String c, CollatzThreadHost q) {
 		seed=a;
 		permutations=b;
+		threadName=c;
+		testBase=testSequence;
 		permutationList = new ArrayList<String>();
 		permutationList.add("0");
 		permutationList.add("1");
+		host=q;
+		gen=new Random();
+		threadData = new ArrayList<Object>();
+		dataOffloaded=false;
 	}
 	
 	public ArrayList<String> generatePermutations(ArrayList<String> list, int x) {  //recursively generate all binary strings of length x
@@ -34,7 +47,7 @@ public class CollatzClosestPermutationCombo {
 		return list;
 	}
 
-	public ArrayList<Object> baseCompletesPermutationSequence(double baseNum, String sequence) {  // runs a test value against a move sequence until a odd/even mismatch.
+	public ArrayList<Object> baseCompletesPermutationSequence(double baseNum, String sequence) {  // runs a test value against a move sequence until an odd/even mismatch.
 		double base = baseNum;                                                                // returns full sequence boolean and number of matched steps
 		ArrayList<Object> data = new ArrayList<Object>();
 		for(int j=0; j<sequence.length(); j++) {
@@ -72,50 +85,45 @@ public class CollatzClosestPermutationCombo {
 		}
 		return data;
 	}
+	public ArrayList<Object> runSequenceMatchSet(double min, double max, String sequence){ // runs "baseCompletePermSeq(..)" over a range of values and returns best match
+		int highest=0;
+		int x=1;
+		ArrayList<Object> farthestMatch= new ArrayList<Object>();
+		for(double i=1.0*min; i<1.0*max;i++) {
+			if(i%1000000000==0)
+				System.out.println(threadName+": "+ x++ +" Billion");
+			ArrayList<Object> matcher = baseCompletesPermutationSequence(i, sequence);
 
-	
-	public static void main(String[] args) {
-		double allClosest = Double.MAX_VALUE;
-		double startingValue = 10000.0;
-		String allClosestSequence = "";
-		for(int n=26; n<27; n++) {
-			CollatzClosestPermutationCombo test = new CollatzClosestPermutationCombo(startingValue, n);
-			test.permutationList = test.generatePermutations(test.permutationList, test.permutations-1);
-	//		System.out.println("Permutation list generated");
-		/**	for(String str: test.permutationList) {
-				System.out.println(str);
-			}**/
-			double closest = Double.MAX_VALUE;
-			String closestPermutations = "";
-			for(int i=0;i<test.permutations; i++) {
-				for(String a: test.permutationList){
-					double x=test.seed;
-					for(int j=0; j<a.length(); j++) {
-						if(a.charAt(j)=='0') {
-							x/=2;
-				//			System.out.println("0-> X: "+x);
-						}
-						else
-						{
-							x=(x*3)+1;
-				//			System.out.println("1-> X: "+x);
-						}
-					}
-			//		System.out.println(a+": "+x);
-					if(Math.abs(test.seed-x)<Math.abs(test.seed-closest)) {
-						closest = x;
-						closestPermutations = a;
-					}
-				}
-	
-			}
-		//	System.out.println("Closest Permutation: "+closestPermutations+", Ratio to starting value: "+((test.seed-(Math.abs(test.seed-closest)))/test.seed));
-			if(Math.abs(test.seed-closest)<Math.abs(startingValue-allClosest)) {
-				allClosest = closest;
-				allClosestSequence = closestPermutations;
+			if((Integer)matcher.get(1)>highest) {
+				farthestMatch = matcher;
+				farthestMatch.add(i);
+				highest=(Integer)matcher.get(1);
 			}
 		}
-		System.out.println("Closest Permutation: "+allClosestSequence+", Ratio to starting value: "+((startingValue-(Math.abs(startingValue-allClosest)))/startingValue)+", n="+allClosestSequence.length());
-	//	System.out.println("End value: "+allClosest);
+		System.out.println("Base: "+farthestMatch.get(2)+", full String:"+farthestMatch.get(0)+", Permutations: "+farthestMatch.get(1));
+		return farthestMatch;
 	}
+	
+	public void run() {
+		System.out.println ("Thread " +
+                Thread.currentThread().getId() +
+                " is running");
+
+		threadData=runSequenceMatchSet(seed, seed+permutations, testBase);
+		while(!dataOffloaded){
+			if(host.appendBusy()){ 
+				try {
+					Thread.sleep(500*gen.nextInt(10));
+				} catch (InterruptedException e) {
+					System.out.println(e);
+				}
+			}
+			else{
+				host.appendResults(threadData);
+				dataOffloaded = true;
+			}
+		}
+		host.incrementThreadClosed();
+		System.out.println(threadName + " closed.");
+	}			
 }
