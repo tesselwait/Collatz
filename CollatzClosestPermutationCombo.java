@@ -13,7 +13,6 @@ public class CollatzClosestPermutationCombo extends Thread {
 	// the sequence allowing search orders of magnitude higher in the number line per unit of compute.  The biggest obstacle thus far is the closest sequence best match was only about
 	// half of a 137 permutation sequence after testing up to a trillion.
 	public double seed, permutations;
-	public ArrayList<String> permutationList;
 	public CollatzThreadHost host;
 	public String testBase, threadName;
 	public boolean dataOffloaded;
@@ -25,28 +24,13 @@ public class CollatzClosestPermutationCombo extends Thread {
 		permutations=b;
 		threadName=c;
 		testBase=testSequence;
-		permutationList = new ArrayList<String>();
-		permutationList.add("0");
-		permutationList.add("1");
 		host=q;
 		gen=new Random();
 		threadData = new ArrayList<Object>();
 		dataOffloaded=false;
 	}
-	
-	public ArrayList<String> generatePermutations(ArrayList<String> list, int x) {  //recursively generate all binary strings of length x
-		if(x>0) {
-			permutationList = new ArrayList<String>();
-			for(String a: list) {
-				permutationList.add(a+"0");
-				if(a.charAt(a.length()-1)!='1') //all odd permutations in Collatz are followed by at least one even permutation.  Filters consecutive '1'
-					permutationList.add(a+"1");
-			}
-			return generatePermutations(permutationList, x-1);
-		}
-		return list;
-	}
 
+	
 	public ArrayList<Object> baseCompletesPermutationSequence(double baseNum, String sequence) {  // runs a test value against a move sequence until an odd/even mismatch.
 		double base = baseNum;                                                                // returns full sequence boolean and number of matched steps
 		ArrayList<Object> data = new ArrayList<Object>();
