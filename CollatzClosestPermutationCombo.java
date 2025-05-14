@@ -19,7 +19,7 @@ public class CollatzClosestPermutationCombo extends Thread {
 	public Random gen;
 	public ArrayList<Object> threadData;	
 	
-	public CollatzClosestPermutationCombo(double a, int b, String testSequence, String c, CollatzThreadHost q) {
+	public CollatzClosestPermutationCombo(double a, double b, String testSequence, String c, CollatzThreadHost q) {
 		seed=a;
 		permutations=b;
 		threadName=c;
