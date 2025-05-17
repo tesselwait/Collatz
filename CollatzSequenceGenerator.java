@@ -139,4 +139,47 @@ public class CollatzSequenceGenerator {
 		permutationList.add("0");
 		permutationList.add("1");
 	}
+
+	final class Node {
+		char num;
+		Node left;
+		Node right;
+	
+	public Node(char x) {
+		num=x;
+		left=null;
+		right=null;
+	}
+		
+	}
+	final class SequenceTree {
+		Node root;
+		
+		public SequenceTree() {
+			root=null;
+		}
+	}
+	
+	public SequenceTree constructTree(ArrayList<ArrayList<String>> seq) {
+		SequenceTree tree = new SequenceTree();
+		tree.root = new Node('r');
+		Node curNode=tree.root;
+		for(ArrayList<String> a: seq) {
+			for(String b: a) {
+				for(int i=0;i<b.length(); i++) {
+					if(b.charAt(i)=='0') {
+						if(curNode.right==null)
+							curNode.right=new Node('0');
+						curNode=curNode.right;
+					}
+					else {
+						if(curNode.left==null)
+							curNode.left= new Node('1');
+						curNode=curNode.left;
+					}			
+				}
+			}
+		}
+		return tree;
+	}
 }
