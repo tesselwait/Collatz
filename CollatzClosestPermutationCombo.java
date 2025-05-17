@@ -17,6 +17,7 @@ public class CollatzClosestPermutationCombo extends Thread {
 	public String testBase, threadName;
 	public boolean dataOffloaded;
 	public Random gen;
+	public ArrayList<String> testBaseSets;
 	public ArrayList<Object> threadData;	
 	
 	public CollatzClosestPermutationCombo(double a, double b, String testSequence, String c, CollatzThreadHost q) {
@@ -29,7 +30,16 @@ public class CollatzClosestPermutationCombo extends Thread {
 		threadData = new ArrayList<Object>();
 		dataOffloaded=false;
 	}
-
+	public CollatzClosestPermutationCombo4(double a, double b, ArrayList<String> testSequenceSets, String c, CollatzThreadHost q) {
+		seed=a;
+		permutations=b;
+		threadName=c;
+		testBaseSets=testSequenceSets;
+		host=q;
+		gen=new Random();
+		threadData = new ArrayList<Object>();
+		dataOffloaded=false;
+	}	
 	
 	public ArrayList<Object> baseCompletesPermutationSequence(double baseNum, String sequence) {  // runs a test value against a move sequence until an odd/even mismatch.
 		double base = baseNum;                                                                // returns full sequence boolean and number of matched steps
