@@ -58,7 +58,7 @@ public class CollatzThreadHost {
 		double totalTestStrings=10000000000.0; 
 		int cores = Runtime.getRuntime().availableProcessors();
 		CollatzSequenceGenerator seqGen = new CollatzSequenceGenerator(100000000000.0, 13);
-		SequenceTree tree = seqGen.constructTree(seqGen.generateBestMatchPermutation(100, 20));
+		SequenceTree tree = seqGen.constructTree(seqGen.generateBestMatchPermutation(100, 20)); //tree generator bugged
 		CollatzThreadHost crawler = new CollatzThreadHost(totalTestStrings, totalTestStrings/(1.0*cores));
 		for(int i=0; i<cores; i++) {
 			CollatzClosestPermutationCombo4 object = new CollatzClosestPermutationCombo4(0.0+i*crawler.threadSet, crawler.threadSet, tree, "Thread "+i, crawler);
