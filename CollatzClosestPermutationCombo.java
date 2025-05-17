@@ -33,7 +33,7 @@ public class CollatzClosestPermutationCombo extends Thread {
 		threadData = new ArrayList<Object>();
 		dataOffloaded=false;
 	}
-	public CollatzClosestPermutationCombo4(double a, double b, ArrayList<String> testSequenceSets, String c, CollatzThreadHost q) {
+	public CollatzClosestPermutationCombo(double a, double b, ArrayList<String> testSequenceSets, String c, CollatzThreadHost q) {
 		seed=a;
 		permutations=b;
 		threadName=c;
@@ -44,7 +44,7 @@ public class CollatzClosestPermutationCombo extends Thread {
 		dataOffloaded=false;
 	}	
 
-	public CollatzClosestPermutationCombo4(double a, double b, SequenceTree tree, String c, CollatzThreadHost q) {
+	public CollatzClosestPermutationCombo(double a, double b, SequenceTree tree, String c, CollatzThreadHost q) {
 		seed=a;
 		permutations=b;
 		threadName=c;
