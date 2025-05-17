@@ -34,8 +34,12 @@ public class CollatzThreadHost {
 	
 	public void writeData() {
 		try (PrintWriter output = new PrintWriter("CollatzOutput.txt")) {
-			for(ArrayList<Object> b: getData())
-				output.printf("Base: %,.0f ; Match: "+b.get(0)+", Permutations: "+b.get(1)+"\n", b.get(2));
+			for(ArrayList<Object> b: getData()){
+				output.printf("Base: %,.0f ; Match: "+b.get(0)+", Permutations: "+b.get(1), b.get(2));
+				if(b.get(3)!=null)
+					System.out.print(", sequence: "+b.get(3);
+				System.out.println();
+			}
 			output.println();
 			output.println();
 		}
@@ -46,8 +50,12 @@ public class CollatzThreadHost {
 		// ----------
 		//  terminal_
 		System.out.println("Results:");
-		for(ArrayList<Object> b: getData())
-			System.out.printf("Base: %,.0f ; Match: "+b.get(0)+", Permutations: "+b.get(1)+"\n", b.get(2));
+		for(ArrayList<Object> b: getData()){
+			System.out.printf("Base: %,.0f ; Match: "+b.get(0)+", Permutations: "+b.get(1), b.get(2));
+			if(b.get(3)!=null)
+				System.out.print(", sequence: "+b.get(3);
+			System.out.println();
+		}
 	}
 	
 	public ArrayList<ArrayList<Object>> getData(){
@@ -64,7 +72,7 @@ public class CollatzThreadHost {
 			CollatzClosestPermutationCombo4 object = new CollatzClosestPermutationCombo4(0.0+i*crawler.threadSet, crawler.threadSet, tree, "Thread "+i, crawler);
 			//CollatzClosestPermutationCombo object = new CollatzClosestPermutationCombo(0.0+i*crawler.threadSet, crawler.threadSet, "10101010101010101010101000000000000000010101010101010101010101000010101010100000000101010101010101010101010000000010101010101010101010101", "Thread "+i, crawler);
 			//CollatzClosestPermutationCombo object = new CollatzClosestPermutationCombo(0.0+i*crawler.threadSet, crawler.threadSet, seqGen.generateBestMatchPermutation(50, 5), "Thread "+i, crawler);
-			// ^ Integrates sequence generator directly into crawler.  Tests list of sequences rather than one.  Comparative slowdown: (2nd param)^5.  Segmented version or constructing a tree should be faster
+			// ^ Integrates sequence generator directly into crawler.  Tests list of sequences rather than one.  Comparative slowdown: (sequences per segment)^(number of segments).  Segmented version or constructing a tree should be faster
 			object.start();
 		}
 		while(crawler.getThreadsClosed()<cores){
@@ -76,6 +84,6 @@ public class CollatzThreadHost {
 				System.out.println(e);
 			}
 		}
-		//crawler.writeData();  //string bug in binary tree version -- still prints in terminal
+		crawler.writeData();
 	}
 }
