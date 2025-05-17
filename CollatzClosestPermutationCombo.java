@@ -87,12 +87,82 @@ public class CollatzClosestPermutationCombo extends Thread {
 		System.out.println("Base: "+farthestMatch.get(2)+", full String:"+farthestMatch.get(0)+", Permutations: "+farthestMatch.get(1));
 		return farthestMatch;
 	}
+
+	public ArrayList<Object> filterGroupSequences(double baseNum, ArrayList<String> sequences) {  // list version of "baseCompletes" - temp stand in for segmented version
+		ArrayList<Object> data = new ArrayList<Object>();
+		double base = baseNum;
+		ArrayList<String> sequencesCopy = (ArrayList<String>) sequences.clone();
+		for(int j=0; j<sequencesCopy.get(0).length(); j++) {
+			Iterator<String> iterator = sequencesCopy.iterator();
+			while(iterator.hasNext()) {
+				String a = iterator.next();
+				if(a.charAt(j)=='1') {
+					if(base%2==1) {
+					//	System.out.print(""+base+"-> ");
+						if(iterator.hasNext()==false)
+							base=(3*base)+1;
+					//	System.out.println("1-> X: "+base);
+					}
+					else {
+						iterator.remove();
+						if(sequencesCopy.size()==0) {
+							data.add(false);
+							data.add(j);
+							return data;
+						}
+					}
+				}
+				else
+				{
+					if(base%2==0)
+					{
+						if(iterator.hasNext()==false)
+							//System.out.print(""+base+"-> ");
+							base=(base/2);
+							//	System.out.println("0-> X: "+base);
+					}
+					else {
+						//System.out.println(j);
+						iterator.remove();
+						if(sequencesCopy.size()==0) {
+							data.add(false);
+							data.add(j);
+							return data;
+						}
+					}
+				}
+			}
+			if(j==sequencesCopy.get(0).length()) {
+				data.add(true);
+				data.add(j);
+			}
+		}
+		return data;
+	}
+	public ArrayList<Object> runSequenceMatchSetFromGroup(double min, double max, ArrayList<String> sequences){ // list version of runSequenceMatchSet
+		int highest=0;
+		int x=1;
+		ArrayList<Object> farthestMatch= new ArrayList<Object>();
+		for(double i=1.0*min; i<1.0*max;i++) {
+			if(i%100000000==0)
+				System.out.println(threadName+": "+ x++ +" Billion");
+			ArrayList<Object> matcher = filterGroupSequences(i, sequences);
+	
+			if((Integer)matcher.get(1)>highest) {
+				farthestMatch = matcher;
+				farthestMatch.add(i);
+				highest=(Integer)matcher.get(1);
+			}
+		}
+		System.out.println("Base: "+farthestMatch.get(2)+", full String:"+farthestMatch.get(0)+", Permutations: "+farthestMatch.get(1));
+		return farthestMatch;
+	}
 	
 	public void run() {
 		System.out.println ("Thread " +
-                Thread.currentThread().getId() +
-                " is running");
-
+		Thread.currentThread().getId() +
+		" is running");
+	
 		threadData=runSequenceMatchSet(seed, seed+permutations, testBase);
 		while(!dataOffloaded){
 			if(host.appendBusy()){ 
