@@ -160,7 +160,7 @@ public class CollatzSequenceGenerator {
 		}
 	}
 	
-	public SequenceTree constructTree(ArrayList<ArrayList<String>> seq) {
+	public SequenceTree constructTree(ArrayList<ArrayList<String>> seq) { // bugged - currently one long linked list
 		SequenceTree tree = new SequenceTree();
 		tree.root = new Node('r');
 		Node curNode=tree.root;
