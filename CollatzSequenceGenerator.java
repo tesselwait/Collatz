@@ -28,63 +28,56 @@ public class CollatzSequenceGenerator {
 		return list;
 	}
 		
-	public static void main(String[] args) {
-		int ttlSeq=100; // total sequences to save
-		int maxNSeq=20; // max sequences per sequence length
+	public ArrayList<String> generateBestMatchPermutation(int total, int secTotal) {
+		ArrayList<ArrayList<String>> subSequences=new ArrayList<ArrayList<String>>();
+		for(int i=0;i<20;i++)
+			subSequences.add(new ArrayList<String>());
+		int ttlSeq=total; // total sequences to save
+		int maxNSeq=secTotal; // max sequences per sequence length
 		ArrayList<Double> allClosest = new ArrayList<Double>();
-		double startingValue = 1000000000.0;
 		ArrayList<String> allClosestSequence = new ArrayList<String>();
 		for(int i=0;i<ttlSeq;i++) {
 			allClosest.add(Double.MAX_VALUE);
 			allClosestSequence.add("");
 		}
-		for(int n=5; n<32; n++) {
-			CollatzSequenceGenerator test = new CollatzSequenceGenerator(startingValue, n);
-			test.permutationList = test.generatePermutations(test.permutationList, test.permutations-1);
-	//		System.out.println("Permutation list generated");
-		/**	for(String str: test.permutationList) {
-				System.out.println(str);
-			}**/
+		ArrayList<String> closestPermutations = new ArrayList<String>();
+		ArrayList<Double> differences = new ArrayList<Double>();
+		for(int n=13; n<32; n++) {
+			setPermutations(n);
+			resetPermutationList();
+			permutationList = generatePermutations(permutationList, permutations-1);
 			double closest = Double.MAX_VALUE;
-			ArrayList<String> closestPermutations = new ArrayList<String>();
-			ArrayList<Double> differences = new ArrayList<Double>();
 			for(int i=0;i<maxNSeq;i++) {
 				differences.add(Double.MAX_VALUE);
 				closestPermutations.add("");
 			}
-
-				
-			for(String a: test.permutationList){
-			//	System.out.println("test string");
-				double x=test.seed;
+			for(String a: permutationList){
+				double x=seed;
 				for(int i=0; i<a.length(); i++) {
+				//	System.out.printf("%.0f\n",x);
 					if(a.charAt(i)=='0') {
 						x/=2;
 			//			System.out.println("0-> X: "+x);
 					}
 					else
 					{
-						x=(x*3)+1;
+						x=x*3+1;
 			//			System.out.println("1-> X: "+x);
 					}
-				}
-					
-			
+				}		
 				for(int j=0; j<maxNSeq; j++) {
-					if(Math.abs(test.seed-x)<Math.abs(test.seed-differences.get(j))) {
-						differences.add(j, x);
+					if(Math.abs(seed-x)<Math.abs(seed-differences.get(j))) {
+						differences.add(j, x); 			
 						differences.remove(maxNSeq);
-						closestPermutations.add(j, a);
+						closestPermutations.add(j, a); 
 						closestPermutations.remove(maxNSeq);
 						break;
 					}
 				}
-
 			}
-		
 			for(double dif: differences) {
 				for(int l=0; l<ttlSeq; l++) {
-					if(Math.abs(test.seed-dif)<Math.abs(test.seed-allClosest.get(l))) {
+					if(Math.abs(seed-dif)<Math.abs(seed-allClosest.get(l))) {
 						allClosest.add(l, dif);
 						allClosest.remove(ttlSeq);
 						allClosestSequence.add(l, closestPermutations.get(differences.indexOf(dif)));
@@ -93,9 +86,57 @@ public class CollatzSequenceGenerator {
 					}
 				}
 			}
+			
 		}
+	//	int len = allClosestSequence.get(0).length(); // segmented version setup
+	//	int stringSet=0;                             //segmented version setup
 		for(String a: allClosestSequence) {
-			System.out.println("Closest Permutation: "+a+", Ratio to starting value: "+((startingValue-/**Math.abs**/(startingValue-allClosest.get(allClosestSequence.indexOf(a))))/startingValue)+", n="+a.length());
+			if(a.length()==31)
+				subSequences.get(0).add(a);
+			if(a.length()==13)
+				subSequences.get(1).add(a);
+			
+		//	System.out.println("Closest Permutation: "+a+", Ratio to starting value: "+((seed-/**Math.abs**/(seed-allClosest.get(allClosestSequence.indexOf(a))))/seed)+", n="+a.length());
 		}
+		// **** hand allocated section ordering - generalize later with a "closest ratio finder"
+		ArrayList<ArrayList<String>> orderedSubSequences = new ArrayList<ArrayList<String>>();
+		for(int i=0;i<5;i++)
+			orderedSubSequences.add(new ArrayList<String>());
+		for(String a: subSequences.get(0)) {
+			orderedSubSequences.get(0).add(a);
+			orderedSubSequences.get(1).add(a);
+			orderedSubSequences.get(3).add(a);
+			orderedSubSequences.get(4).add(a);
+		}
+		for(String a: subSequences.get(1))
+			orderedSubSequences.get(2).add(a);
+		for(int i=0; i<orderedSubSequences.get(2).size(); i++) {
+			for(int j=i+1;j<orderedSubSequences.get(2).size(); j++) {
+				if(orderedSubSequences.get(2).get(i)==orderedSubSequences.get(2).get(j)) {
+					orderedSubSequences.get(2).remove(j);
+					j--;
+				}
+			}
+		}
+		//return orderedSubSequences;  //  returns an ArrayList composed of ArrayLists of sequence sections.  Will work faster with segmented crawler than sending list of all possible composed sequences.
+		ArrayList<String> allSequences = new ArrayList<String>();
+		for(String a: orderedSubSequences.get(0))
+			for(String b: orderedSubSequences.get(1))
+				for(String c: orderedSubSequences.get(2))
+					for(String d: orderedSubSequences.get(3))
+						for(String e: orderedSubSequences.get(4))
+							allSequences.add(a+new StringBuilder(b).reverse().toString()+c+d+e);  // reversed to match hand constucted sequence format
+		System.out.println("Sequences: "+allSequences.size());
+		return allSequences;
+	}
+	
+	public void setPermutations(int a) {
+		permutations=a;
+	}
+	
+	public void resetPermutationList() {
+		permutationList = new ArrayList<String>();
+		permutationList.add("0");
+		permutationList.add("1");
 	}
 }
