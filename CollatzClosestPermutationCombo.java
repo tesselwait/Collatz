@@ -234,7 +234,7 @@ public class CollatzClosestPermutationCombo extends Thread {
 
 			if((Integer)matcher.get(1)>highest) {
 				farthestMatch = matcher;
-				farthestMatch.add(i);
+				farthestMatch.add(2, i);
 				highest=(Integer)matcher.get(1);
 			}
 		}
