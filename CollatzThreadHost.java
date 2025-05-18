@@ -37,7 +37,7 @@ public class CollatzThreadHost {
 			for(ArrayList<Object> b: getData()){
 				output.printf("Base: %,.0f ; Match: "+b.get(0)+", Permutations: "+b.get(1), b.get(2));
 				if(b.get(3)!=null)
-					System.out.print(", sequence: "+b.get(3);
+					System.out.print(", sequence: "+b.get(3));
 				System.out.println();
 			}
 			output.println();
@@ -53,7 +53,7 @@ public class CollatzThreadHost {
 		for(ArrayList<Object> b: getData()){
 			System.out.printf("Base: %,.0f ; Match: "+b.get(0)+", Permutations: "+b.get(1), b.get(2));
 			if(b.size()>3)
-				System.out.print(", sequence: "+b.get(3);
+				System.out.print(", sequence: "+b.get(3));
 			System.out.println();
 		}
 	}
