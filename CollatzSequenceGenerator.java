@@ -28,7 +28,7 @@ public class CollatzSequenceGenerator {
 		return list;
 	}
 		
-	public ArrayList<String> generateBestMatchPermutation(int total, int secTotal) {
+	public ArrayList<ArrayList<String>> generateBestMatchPermutation(int total, int secTotal) {
 		ArrayList<ArrayList<String>> subSequences=new ArrayList<ArrayList<String>>();
 		for(int i=0;i<20;i++)
 			subSequences.add(new ArrayList<String>());
@@ -104,9 +104,9 @@ public class CollatzSequenceGenerator {
 			orderedSubSequences.add(new ArrayList<String>());
 		for(String a: subSequences.get(0)) {
 			orderedSubSequences.get(0).add(a);
-			orderedSubSequences.get(1).add(a);
-			orderedSubSequences.get(3).add(a);
-			orderedSubSequences.get(4).add(a);
+			orderedSubSequences.get(1).add(new StringBuilder(a).reverse().toString());
+			orderedSubSequences.get(3).add(new StringBuilder(a).reverse().toString());
+			orderedSubSequences.get(4).add(new StringBuilder(a).reverse().toString());
 		}
 		for(String a: subSequences.get(1))
 			orderedSubSequences.get(2).add(a);
@@ -119,7 +119,7 @@ public class CollatzSequenceGenerator {
 			}
 		}
 		//return orderedSubSequences;  //  returns an ArrayList composed of ArrayLists of sequence sections.  Will work faster with segmented crawler than sending list of all possible composed sequences.
-		ArrayList<String> allSequences = new ArrayList<String>();
+		/**ArrayList<String> allSequences = new ArrayList<String>();
 		for(String a: orderedSubSequences.get(0))
 			for(String b: orderedSubSequences.get(1))
 				for(String c: orderedSubSequences.get(2))
@@ -127,7 +127,8 @@ public class CollatzSequenceGenerator {
 						for(String e: orderedSubSequences.get(4))
 							allSequences.add(a+new StringBuilder(b).reverse().toString()+c+d+e);  // reversed to match hand constucted sequence format
 		System.out.println("Sequences: "+allSequences.size());
-		return allSequences;
+		return allSequences;**/
+		return orderedSubSequences;
 	}
 	
 	public void setPermutations(int a) {
