@@ -168,7 +168,7 @@ public class CollatzClosestPermutationCombo extends Thread {
 		int x=1;
 		ArrayList<Object> farthestMatch= new ArrayList<Object>();
 		for(double i=1.0*min; i<1.0*max;i++) {
-			if(i%100000000==0)
+			if(i%1000000000==0)
 				System.out.println(threadName+": "+ x++ +" Billion");
 			ArrayList<Object> matcher = filterGroupSequences(i, sequences);
 	
