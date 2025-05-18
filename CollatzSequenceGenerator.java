@@ -160,23 +160,53 @@ public class CollatzSequenceGenerator {
 		}
 	}
 	
-	public SequenceTree constructTree(ArrayList<ArrayList<String>> seq) { // bugged - currently one long linked list
+	public SequenceTree constructTree(ArrayList<ArrayList<String>> seq) { // builds binary tree out of set of subsequence lists
 		SequenceTree tree = new SequenceTree();
 		tree.root = new Node('r');
 		Node curNode=tree.root;
-		for(ArrayList<String> a: seq) {
-			for(String b: a) {
-				for(int i=0;i<b.length(); i++) {
-					if(b.charAt(i)=='0') {
-						if(curNode.right==null)
-							curNode.right=new Node('0');
-						curNode=curNode.right;
+		ArrayList<ArrayList<Node>> tempHooksSet = new ArrayList<ArrayList<Node>>();
+		for(int i=0;i<seq.size()-1; i++) {
+			tempHooksSet.add(new ArrayList<Node>());
+		}
+		for(int j=0; j<seq.size(); j++){
+			if(j==0){
+				for(String b: seq.get(j) {
+					for(int i=0;i<b.length(); i++) {
+						if(b.charAt(i)=='0') {
+							if(curNode.right==null)
+								curNode.right=new Node('0');
+							curNode=curNode.right;
+						}
+						else {
+							if(curNode.left==null)
+								curNode.left= new Node('1');
+							curNode=curNode.left;
+						}
+						if(i==b.length()-1&&j<seq.size()-1)
+							tempHooksSet.get(j).add(curNode);
 					}
-					else {
-						if(curNode.left==null)
-							curNode.left= new Node('1');
-						curNode=curNode.left;
-					}			
+				}
+			}
+			else{
+				for(Node n: tempHooksSet.get(j-1)) {
+					curNode=n;
+					for(String b: seq.get(j)) {
+						for(int i=0;i<b.length();i++) {
+							if(b.charAt(i)=='0') {
+								if(curNode.right==null) 
+									curNode.right=new Node('0');
+								curNode=curNode.right;
+							}
+							else {
+								if(curNode.left==null) {
+									curNode.left= new Node('1');
+								}
+								curNode=curNode.left;
+							}
+							if(i==b.length()-1&&j<seq.size()-1)
+								tempHooksSet.get(j).add(curNode);
+						}
+					}
 				}
 			}
 		}
