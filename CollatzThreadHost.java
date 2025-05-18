@@ -69,7 +69,7 @@ public class CollatzThreadHost {
 		SequenceTree tree = seqGen.constructTree(seqGen.generateBestMatchPermutation(100, 20));
 		CollatzThreadHost crawler = new CollatzThreadHost(totalTestStrings, totalTestStrings/(1.0*cores));
 		for(int i=0; i<cores; i++) {
-			CollatzClosestPermutationCombo4 object = new CollatzClosestPermutationCombo4(0.0+i*crawler.threadSet, crawler.threadSet, tree, "Thread "+i, crawler);  // runs about half as fast as single sequence crawler
+			CollatzClosestPermutationCombo object = new CollatzClosestPermutationCombo(0.0+i*crawler.threadSet, crawler.threadSet, tree, "Thread "+i, crawler);  // runs about half as fast as single sequence crawler
 			//CollatzClosestPermutationCombo object = new CollatzClosestPermutationCombo(0.0+i*crawler.threadSet, crawler.threadSet, "10101010101010101010101000000000000000010101010101010101010101000010101010100000000101010101010101010101010000000010101010101010101010101", "Thread "+i, crawler);
 			//CollatzClosestPermutationCombo object = new CollatzClosestPermutationCombo(0.0+i*crawler.threadSet, crawler.threadSet, seqGen.generateBestMatchPermutation(50, 5), "Thread "+i, crawler);
 			// ^ Integrates sequence generator directly into crawler.  Tests list of sequences rather than one.  Comparative slowdown: (sequences per segment)^(number of segments).  Segmented version or constructing a tree should be faster
