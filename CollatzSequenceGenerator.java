@@ -171,7 +171,7 @@ public class CollatzSequenceGenerator {
 		}
 		for(int j=0; j<seq.size(); j++){
 			if(j==0){
-				for(String b: seq.get(j) {
+				for(String b: seq.get(j)) {
 					for(int i=0;i<b.length(); i++) {
 						if(b.charAt(i)=='0') {
 							if(curNode.right==null)
