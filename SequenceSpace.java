@@ -103,7 +103,7 @@ public class SequenceSpace {
 	}
 		
 	public static void main(String[] args) {
-		SequenceSpace4 test = new SequenceSpace();
+		SequenceSpace test = new SequenceSpace();
 			for(int[] a: test.generateList()) {
 				//System.out.println(a[0]+", "+a[1]);
 				test.generateSequences(a, 10000, a[0], a[1]);  // 2nd param number of random sequences to generate per 1/0 count pair
