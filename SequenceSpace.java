@@ -10,7 +10,7 @@ public class SequenceSpace {
 	//  and comparison of many sequences that are more likely close to 1/1 ratio.  Can be directly crawled or used to find separate offsetting ratios.
 	private ArrayList<String> testSequences;
 	private double bestRatio;
-	public SequenceSpace4() {
+	public SequenceSpace() {
 		testSequences=new ArrayList<String>();
 		bestRatio=Double.MAX_VALUE;
 	}
