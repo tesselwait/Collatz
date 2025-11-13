@@ -146,4 +146,5 @@ public class SequenceSpace {
 	public static void main(String[] args) {
 		SequenceSpace test = new SequenceSpace();
 		test.sequenceMatcher(100, 120, 10000); // (max 1s, max 0s, sequences per section)
+	}
 }
