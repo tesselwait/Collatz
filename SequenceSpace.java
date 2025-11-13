@@ -102,7 +102,7 @@ public class SequenceSpace {
 		System.out.println(seed);
 	}
 
-		public void sequenceMatcher(int oneLimit, int zeroLimit, int sequenceSet) {
+	public void sequenceMatcher(int oneLimit, int zeroLimit, int sequenceSet) {
 		ArrayList<ArrayList<Object>> ratioSet = new ArrayList<ArrayList<Object>>();
 		for(int[] a: generateList(oneLimit, zeroLimit)) {
 			//System.out.println(a[0]+", "+a[1]);
