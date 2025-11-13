@@ -10,12 +10,14 @@ public class SequenceSpace {
 	//  and comparison of many sequences that are more likely close to 1/1 ratio.  Can be directly crawled or used to find separate offsetting ratios.
 	private ArrayList<String> testSequences;
 	private double bestRatio;
+	private double testBase;
 	public SequenceSpace() {
 		testSequences=new ArrayList<String>();
 		bestRatio=Double.MAX_VALUE;
+		testBase=1000000000.0;
 	}
 	public double runString(String str) {
-		double start = 1000000000;
+		double start = testBase;
 		double seed = start;
 		for(int i=0; i<str.length(); i++) {
 			if(str.charAt(i)=='1')
@@ -102,7 +104,8 @@ public class SequenceSpace {
 		System.out.println(seed);
 	}
 
-	public void sequenceMatcher(int oneLimit, int zeroLimit, int sequenceSet) {
+	public void sequenceMatcher(int oneLimit, int zeroLimit, int sequenceSet, double base) {
+		testBase=base;
 		ArrayList<ArrayList<Object>> ratioSet = new ArrayList<ArrayList<Object>>();
 		for(int[] a: generateList(oneLimit, zeroLimit)) {
 			//System.out.println(a[0]+", "+a[1]);
@@ -145,6 +148,6 @@ public class SequenceSpace {
 		
 	public static void main(String[] args) {
 		SequenceSpace test = new SequenceSpace();
-		test.sequenceMatcher(100, 120, 10000); // (max 1s, max 0s, sequences per section)
+		test.sequenceMatcher(100, 120, 10000, 1000000000.0); // (max 1s, max 0s, sequences per section, base number to run collatz sequences)
 	}
 }
