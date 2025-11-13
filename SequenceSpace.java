@@ -5,7 +5,7 @@ public class SequenceSpace {
 	//  Original sequence generator filtered all allowable sequences by closest to 1/1 ratio in 5 different lengths and then manually constructed
 	//  a tree composed from 5 sets of offsetting sequence lists connected end to end.
 	
-	//  This program is an alternate sequence generator starting with the ratio of '1' and '0' permutations: .63 < '0's/('1's+'0's) < .64  or ~61% 0s
+	//  This program is an alternate sequence generator starting with the ratio of '1' and '0' permutations: .63 < '0's/'1's < .64  or ~61% 0s
 	//  based on previous results and then randomly composes sequences adhering to that ratio, narrowing the search space and allowing targeted generation
 	//  and comparison of many sequences that are more likely close to 1/1 ratio.  Can be directly crawled or used to find separate offsetting ratios.
 	private ArrayList<String> testSequences;
