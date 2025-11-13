@@ -104,7 +104,7 @@ public class SequenceSpace {
 
 		public void sequenceMatcher(int oneLimit, int zeroLimit, int sequenceSet) {
 		ArrayList<ArrayList<Object>> ratioSet = new ArrayList<ArrayList<Object>>();
-		for(int[] a: generateList()) {
+		for(int[] a: generateList(oneLimit, zeroLimit)) {
 			//System.out.println(a[0]+", "+a[1]);
 			generateSequences(a, sequenceSet, a[0], a[1]);  // 2nd param number of random sequences to generate per 1/0 count pair
 			ArrayList<Object> bestMatch = findBestMatch();
