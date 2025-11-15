@@ -146,7 +146,7 @@ public class SequenceSpace {
 		System.out.println("Ratio: "+ratioSet.get(bestB).get(0)+", "+ratioSet.get(bestB).get(1)+", n="+ratioSet.get(bestB).get(1).toString().length());
 	}
 
-	public void scaleRunString(String base) {  // run a base string from a range of starting values in factors of 10
+	public void scaleRunString(String base) {  // run a sequence string from a range of starting values in factors of 10
 		for(double i=100; i<100000000000000000000000000.0;i*=10) {
 			testBase=i;
 			System.out.println("Base: "+i+", ratio: "+runString(base));
