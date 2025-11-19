@@ -141,12 +141,10 @@ public class CollatzSequenceGenerator {
 	}
 
 	final class Node {
-		char num;
 		Node left;
 		Node right;
 	
-	public Node(char x) {
-		num=x;
+	public Node() {
 		left=null;
 		right=null;
 	}
@@ -162,7 +160,7 @@ public class CollatzSequenceGenerator {
 	
 	public SequenceTree constructTree(ArrayList<ArrayList<String>> seq) { // builds binary tree out of set of subsequence lists
 		SequenceTree tree = new SequenceTree();
-		tree.root = new Node('r');
+		tree.root = new Node();
 		Node curNode=tree.root;
 		ArrayList<ArrayList<Node>> tempHooksSet = new ArrayList<ArrayList<Node>>();
 		for(int i=0;i<seq.size()-1; i++) {
@@ -174,12 +172,12 @@ public class CollatzSequenceGenerator {
 					for(int i=0;i<b.length(); i++) {
 						if(b.charAt(i)=='0') {
 							if(curNode.right==null)
-								curNode.right=new Node('0');
+								curNode.right=new Node();
 							curNode=curNode.right;
 						}
 						else {
 							if(curNode.left==null)
-								curNode.left= new Node('1');
+								curNode.left= new Node();
 							curNode=curNode.left;
 						}
 						if(i==b.length()-1&&j<seq.size()-1)
@@ -194,12 +192,12 @@ public class CollatzSequenceGenerator {
 						for(int i=0;i<b.length();i++) {
 							if(b.charAt(i)=='0') {
 								if(curNode.right==null) 
-									curNode.right=new Node('0');
+									curNode.right=new Node();
 								curNode=curNode.right;
 							}
 							else {
 								if(curNode.left==null) {
-									curNode.left= new Node('1');
+									curNode.left= new Node();
 								}
 								curNode=curNode.left;
 							}
@@ -215,19 +213,19 @@ public class CollatzSequenceGenerator {
 
 	public SequenceTree constructTreeFromList(ArrayList<String> sequences) { // constructs a binary tree from a list of sequences
 		SequenceTree tree = new SequenceTree();
-		tree.root = new Node('r');
+		tree.root = new Node();
 		Node curNode=tree.root;
 		for(String j: sequences){
 			curNode=tree.root;
 			for(int k=0; k<j.length(); k++) {
 				if(j.charAt(k)=='0') {
 					if(curNode.right==null)
-						curNode.right=new Node('0');
+						curNode.right=new Node();
 					curNode=curNode.right;
 				}
 				else {
 					if(curNode.left==null)
-						curNode.left= new Node('1');
+						curNode.left= new Node();
 					curNode=curNode.left;
 				}
 			}
