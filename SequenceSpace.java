@@ -111,7 +111,7 @@ public class SequenceSpace {
 		ArrayList<ArrayList<Object>> ratioSet = new ArrayList<ArrayList<Object>>();
 		for(int[] a: generateList(oneLimit, zeroLimit, allPairs)) {
 			//System.out.println(a[0]+", "+a[1]);
-			generateSequences(sequenceSet, a[0], a[1]);  // 2nd param number of random sequences to generate per 1/0 count pair
+			generateSequences(sequenceSet, a[0], a[1]);  // sequenceSet is number of random sequences to generate per 1/0 count pair
 			ArrayList<Object> bestMatch = findBestMatch();
 			ratioSet.add(bestMatch);
 			System.out.println("Ratio: "+bestMatch.get(0)+", "+bestMatch.get(1)+", n="+bestMatch.get(1).toString().length());
