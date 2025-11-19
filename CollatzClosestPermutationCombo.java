@@ -188,8 +188,8 @@ public class CollatzClosestPermutationCombo extends Thread {
 		Node curNode = tree.root;
 		int count=0;
 		while(!(curNode.left==null&&curNode.right==null)) {
-			if(base%2==1 && base%3!=0) {  // remove 2nd boolean for speed increase on explorational runs
-				if(curNode.left!=null) {
+			if(base%2==1 ) {  
+				if(curNode.left!=null && base%3!=0) { // remove 2nd boolean for speed increase on explorational runs
 					base=(3*base)+1;
 					seq=seq+"1";
 					count+=1;
