@@ -238,6 +238,27 @@ public class CollatzClosestPermutationCombo extends Thread {
 				highest=(Integer)matcher.get(1);
 			}
 		}
+		Node tempNode = tree.root;                   // -- append rest of sequence from best match by recrawling tree
+		String matchString=farthestMatch.get(3).toString();
+		for(int j=0; j<matchString.length(); j++)
+		{ 
+			if(matchString.charAt(j)=='1')
+				tempNode=tempNode.left;
+			else
+				tempNode=tempNode.right;
+		}
+		matchString=matchString+" -- ";
+		while(tempNode.left!=null||tempNode.right!=null) {
+			if(tempNode.left!=null) {
+				matchString=matchString+"1";
+				tempNode=tempNode.left;
+			}
+			else {
+				matchString=matchString+"0";
+				tempNode=tempNode.right;
+			}
+		}
+		farthestMatch.set(3, matchString);  // --
 		System.out.println("Base: "+farthestMatch.get(2)+", full String:"+farthestMatch.get(0)+", Permutations: "+farthestMatch.get(1));
 		return farthestMatch;
 	}
