@@ -42,11 +42,10 @@ public class CollatzSequenceGenerator {
 		}
 		ArrayList<String> closestPermutations = new ArrayList<String>();
 		ArrayList<Double> differences = new ArrayList<Double>();
-		for(int n=13; n<32; n++) {
+		for(int n=13; n<32; n++) {  // n=32 based on ram limit at ~24gb ram. Can write to disk but storage is 2^n
 			setPermutations(n);
 			resetPermutationList();
 			permutationList = generatePermutations(permutationList, permutations-1);
-			double closest = Double.MAX_VALUE;
 			for(int i=0;i<maxNSeq;i++) {
 				differences.add(Double.MAX_VALUE);
 				closestPermutations.add("");
@@ -208,6 +207,28 @@ public class CollatzSequenceGenerator {
 								tempHooksSet.get(j).add(curNode);
 						}
 					}
+				}
+			}
+		}
+		return tree;
+	}
+
+	public SequenceTree constructTreeFromList(ArrayList<String> sequences) { // constructs a binary tree from a list of sequences
+		SequenceTree tree = new SequenceTree();
+		tree.root = new Node('r');
+		Node curNode=tree.root;
+		for(String j: sequences){
+			curNode=tree.root;
+			for(int k=0; k<j.length(); k++) {
+				if(j.charAt(k)=='0') {
+					if(curNode.right==null)
+						curNode.right=new Node('0');
+					curNode=curNode.right;
+				}
+				else {
+					if(curNode.left==null)
+						curNode.left= new Node('1');
+					curNode=curNode.left;
 				}
 			}
 		}
