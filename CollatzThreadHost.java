@@ -68,8 +68,8 @@ public class CollatzThreadHost {
 		double totalTestStrings=10000000000.0; 
 		int cores = Runtime.getRuntime().availableProcessors();
 		CollatzSequenceGenerator seqGen = new CollatzSequenceGenerator(100000000000.0, 13);
-		SequenceSpace5 seqGen2 = new SequenceSpace5(); // --
-		int[] pair = seqGen2.generateList(306, 485, false).get(0) // --
+		SequenceSpace seqGen2 = new SequenceSpace(); // --
+		int[] pair = seqGen2.generateList(306, 485, false).get(0); // --
 		seqGen2.generateSequences(10000, pair[0], pair[1]); // --
 		SequenceTree tree = seqGen.constructTreeFromList(seqGen2.testSequences); // -- from SequenceSpace generator
 	//	SequenceTree tree = seqGen.constructTree(seqGen.generateBestMatchPermutation(100, 20)); // from CollatzSequenceGenerator
