@@ -8,7 +8,7 @@ public class SequenceSpace {
 	//  This program is an alternate sequence generator starting with the ratio of '1' and '0' permutations: .63 < '0's/'1's < .64  or ~61% 0s
 	//  based on previous results and then randomly composes sequences adhering to that ratio, narrowing the search space and allowing targeted generation
 	//  and comparison of many sequences that are more likely close to 1/1 ratio.  Can be directly crawled or used to find separate offsetting ratios.
-	private ArrayList<String> testSequences;
+	public ArrayList<String> testSequences;
 	private double bestRatio;
 	private double testBase;
 	public SequenceSpace() {
@@ -28,27 +28,29 @@ public class SequenceSpace {
 		return seed/start;
 	}
 	
-	public ArrayList<int[]> generateList(int oneLimit, int zeroLimit) {
+	public ArrayList<int[]> generateList(int oneLimit, int zeroLimit, boolean includeAll) {  // generates 
 			ArrayList<int[]> list = new ArrayList<int[]>();
-		//	int m=54; 
-		//	int n=85;  
-		//	for(int i=m; i<=m; i++) {  
-		//		for(int j=n;j<=n;j++) {
-			for(int i=0; i<=oneLimit; i++) {  
-				for(int j=0;j<=zeroLimit;j++) {
-					double a = (1.0*i)/(j*1.0);
-					if(a>.63 && a<.64) {  // ratio of 1 permutation to 0 permutation for current close matches
-						int[] arr = {i,j};
-						list.add(arr);
+			if(includeAll) {
+				for(int i=0; i<=oneLimit; i++) {   // across all values under oneLimit and zeroLimit
+					for(int j=0;j<=zeroLimit;j++) { // --------
+						double a = (1.0*i)/(j*1.0);
+						if(a>.63 && a<.64) {  // ratio of 1 permutation to 0 permutation for current close matches
+							int[] arr = {i,j};
+							list.add(arr);
+						}
 					}
 				}
 			}
+			else {
+				int[] arr = {oneLimit, zeroLimit};
+				list.add(arr);
+			}			
 		//	for(int[] b: list)  
 				//System.out.println(b[0]+", "+b[1]);
 			return list;
 	}
 	
-	public void generateSequences(int[] nums, int seqTotal, int ones, int zeros) { // generates random sequences complying with the 1-0 ratio
+	public void generateSequences(int seqTotal, int ones, int zeros) { // generates random sequences complying with the 1-0 ratio
 		testSequences=new ArrayList<String>();
 		for(int g=0; g<seqTotal; g++) {
 			Random gen = new Random();
@@ -104,12 +106,12 @@ public class SequenceSpace {
 		System.out.println(seed);
 	}
 
-	public void sequenceMatcher(int oneLimit, int zeroLimit, int sequenceSet, double base) {
+	public void sequenceMatcher(int oneLimit, int zeroLimit, boolean allPairs, int sequenceSet, double base) {
 		testBase=base;
 		ArrayList<ArrayList<Object>> ratioSet = new ArrayList<ArrayList<Object>>();
-		for(int[] a: generateList(oneLimit, zeroLimit)) {
+		for(int[] a: generateList(oneLimit, zeroLimit, allPairs)) {
 			//System.out.println(a[0]+", "+a[1]);
-			generateSequences(a, sequenceSet, a[0], a[1]);  // 2nd param number of random sequences to generate per 1/0 count pair
+			generateSequences(sequenceSet, a[0], a[1]);  // 2nd param number of random sequences to generate per 1/0 count pair
 			ArrayList<Object> bestMatch = findBestMatch();
 			ratioSet.add(bestMatch);
 			System.out.println("Ratio: "+bestMatch.get(0)+", "+bestMatch.get(1)+", n="+bestMatch.get(1).toString().length());
@@ -136,14 +138,16 @@ public class SequenceSpace {
 			}
 		}
 		System.out.println();
-		System.out.print("Best Ratio: "+currentBestRatio);
-		if(ab)
-			System.out.println(", "+ratioSet.get(bestA).get(1)+ratioSet.get(bestB).get(1)+", n="+((Integer)(ratioSet.get(bestA).get(1).toString().length()+ratioSet.get(bestB).get(1).toString().length())));
-		else
-			System.out.println(", "+ratioSet.get(bestB).get(1)+ratioSet.get(bestA).get(1)+", n="+((Integer)(ratioSet.get(bestB).get(1).toString().length()+ratioSet.get(bestA).get(1).toString().length())));
-		
-		System.out.println("Ratio: "+ratioSet.get(bestA).get(0)+", "+ratioSet.get(bestA).get(1)+", n="+ratioSet.get(bestA).get(1).toString().length());
-		System.out.println("Ratio: "+ratioSet.get(bestB).get(0)+", "+ratioSet.get(bestB).get(1)+", n="+ratioSet.get(bestB).get(1).toString().length());
+		if(ratioSet.size()!=1){
+			System.out.print("Best Ratio: "+currentBestRatio);
+			if(ab)
+				System.out.println(", "+ratioSet.get(bestA).get(1)+ratioSet.get(bestB).get(1)+", n="+((Integer)(ratioSet.get(bestA).get(1).toString().length()+ratioSet.get(bestB).get(1).toString().length())));
+			else
+				System.out.println(", "+ratioSet.get(bestB).get(1)+ratioSet.get(bestA).get(1)+", n="+((Integer)(ratioSet.get(bestB).get(1).toString().length()+ratioSet.get(bestA).get(1).toString().length())));
+			
+			System.out.println("Ratio: "+ratioSet.get(bestA).get(0)+", "+ratioSet.get(bestA).get(1)+", n="+ratioSet.get(bestA).get(1).toString().length());
+			System.out.println("Ratio: "+ratioSet.get(bestB).get(0)+", "+ratioSet.get(bestB).get(1)+", n="+ratioSet.get(bestB).get(1).toString().length());
+		}
 	}
 
 	public void scaleRunString(String base) {  // run a sequence string from a range of starting values in factors of 10
@@ -156,6 +160,6 @@ public class SequenceSpace {
 	public static void main(String[] args) {
 		SequenceSpace test = new SequenceSpace();
 		//test.scaleRunString("0010000000000000000000001000100101001010001010010101010101010101001010100101010101010100101010101010101010101010101010100000100101001010010101001010101010101001010101010100101010101");
-		test.sequenceMatcher(100, 120, 10000, 1000000000.0); // (max 1s, max 0s, sequences per section, base number to run collatz sequences)
+		test.sequenceMatcher(100, 120, true, 10000, 1000000000.0); // (max 1s, max 0s, include all value pairs, sequences per section, base number to run collatz sequences)  // (306, 485)
 	}
 }
