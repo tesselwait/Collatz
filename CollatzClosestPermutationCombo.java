@@ -60,7 +60,7 @@ public class CollatzClosestPermutationCombo extends Thread {
 		ArrayList<Object> data = new ArrayList<Object>();
 		for(int j=0; j<sequence.length(); j++) {
 			if(sequence.charAt(j)=='1') {
-				if(base%2==1) {
+				if(base%2==1 && base%3!=0) {  // remove 2nd boolean for speed increase on explorational runs
 				//	System.out.print(""+base+"-> ");
 					base=(3*base)+1;
 				//	System.out.println("1-> X: "+base);
@@ -121,7 +121,7 @@ public class CollatzClosestPermutationCombo extends Thread {
 			while(iterator.hasNext()) {
 				String a = iterator.next();
 				if(a.charAt(j)=='1') {
-					if(base%2==1) {
+					if(base%2==1 && base%3!=0) {  // remove 2nd boolean for speed increase on explorational run
 					//	System.out.print(""+base+"-> ");
 						if(iterator.hasNext()==false)
 							base=(3*base)+1;
@@ -188,7 +188,7 @@ public class CollatzClosestPermutationCombo extends Thread {
 		Node curNode = tree.root;
 		int count=0;
 		while(!(curNode.left==null&&curNode.right==null)) {
-			if(base%2==1) {
+			if(base%2==1 && base%3!=0) {  // remove 2nd boolean for speed increase on explorational runs
 				if(curNode.left!=null) {
 					base=(3*base)+1;
 					seq=seq+"1";
