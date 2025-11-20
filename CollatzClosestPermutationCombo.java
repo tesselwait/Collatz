@@ -74,7 +74,7 @@ public class CollatzClosestPermutationCombo extends Thread {
 			}
 			else
 			{
-				if(base%2==0) {
+				if(base%2==0 && base%3!=0) {  // remove 2nd boolean for speed increase on explorational runs
 					//System.out.print(""+base+"-> ");
 					base=(base/2);
 				//	System.out.println("0-> X: "+base);
@@ -138,7 +138,7 @@ public class CollatzClosestPermutationCombo extends Thread {
 				}
 				else
 				{
-					if(base%2==0)
+					if(base%2==0 && base%3!=0)
 					{
 						if(iterator.hasNext()==false)
 							//System.out.print(""+base+"-> ");
