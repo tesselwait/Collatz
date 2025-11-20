@@ -203,7 +203,7 @@ public class CollatzClosestPermutationCombo extends Thread {
 				}
 			}
 			else {
-				if(curNode.right!=null) {
+				if(curNode.right!=null && base%3!=0) { // remove 2nd boolean for speed increase on explorational runs
 					base=base/2;
 					seq=seq+"0";
 					count+=1;
