@@ -28,7 +28,7 @@ public class SequenceSpace {
 		return seed/start;
 	}
 	
-	public ArrayList<int[]> generateList(int oneLimit, int zeroLimit, boolean includeAll) {  // generates 
+	public ArrayList<int[]> generateList(int oneLimit, int zeroLimit, boolean includeAll) {  // generates lists of {ones, zeros} pairs within a specific ones/zeros ratio value
 			ArrayList<int[]> list = new ArrayList<int[]>();
 			if(includeAll) {
 				for(int i=0; i<=oneLimit; i++) {   // across all values under oneLimit and zeroLimit
