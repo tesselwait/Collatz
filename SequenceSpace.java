@@ -75,6 +75,13 @@ public class SequenceSpace {
 				else
 					testString = new String(testString.substring(0, rand)+"1");
 			}
+			if(testString.charAt(0)=='1'&& testString.charAt(testString.length()-1)=='1') {  // prevent 1s at both first and last permutation
+				int temp2=ones+zeros-2;
+				while(testString.charAt(temp2)=='1'||(testString.charAt(temp2-1)=='1') || testString.charAt(temp2+1)=='1') {
+					temp2--;
+				}
+				testString = new String(testString.substring(0, temp2)+"1"+testString.substring(temp2+1, testString.length()-1));
+			}
 		//	System.out.println(testString);
 			testSequences.add(testString);
 		}
