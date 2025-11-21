@@ -21,7 +21,8 @@ public class CollatzClosestPermutationCombo extends Thread {
 	public Random gen;
 	public ArrayList<String> testBaseSets;
 	public SequenceTree sequenceTree;
-	public ArrayList<Object> threadData;	
+	public ArrayList<Object> threadData;
+	public int runMode;
 	
 	public CollatzClosestPermutationCombo(double a, double b, String testSequence, String c, CollatzThreadHost q) {
 		seed=a;
@@ -32,6 +33,7 @@ public class CollatzClosestPermutationCombo extends Thread {
 		gen=new Random();
 		threadData = new ArrayList<Object>();
 		dataOffloaded=false;
+		runMode=0;
 	}
 	public CollatzClosestPermutationCombo(double a, double b, ArrayList<String> testSequenceSets, String c, CollatzThreadHost q) {
 		seed=a;
@@ -42,6 +44,7 @@ public class CollatzClosestPermutationCombo extends Thread {
 		gen=new Random();
 		threadData = new ArrayList<Object>();
 		dataOffloaded=false;
+		runMode=1;
 	}	
 
 	public CollatzClosestPermutationCombo(double a, double b, SequenceTree tree, String c, CollatzThreadHost q) {
@@ -53,6 +56,7 @@ public class CollatzClosestPermutationCombo extends Thread {
 		gen=new Random();
 		threadData = new ArrayList<Object>();
 		dataOffloaded=false;
+		runMode=2;
 	}
 	
 	public ArrayList<Object> baseCompletesPermutationSequence(double baseNum, String sequence) {  // runs a test value against a move sequence until an odd/even mismatch.
@@ -268,8 +272,19 @@ public class CollatzClosestPermutationCombo extends Thread {
 		System.out.println ("Thread " +
 		Thread.currentThread().getId() +
 		" is running");
-	
-		threadData=runSequenceMatchSetFromTree(seed, seed+permutations, sequenceTree);
+		switch(runMode) {
+		case 0:
+			threadData=runSequenceMatchSet(seed, seed+permutations, testBase);
+			break;
+		case 1:
+			threadData=runSequenceMatchSetFromGroup(seed, seed+permutations, testBaseSets);
+			break;
+		case 2:
+			threadData=runSequenceMatchSetFromTree(seed, seed+permutations, sequenceTree);
+			break;
+		default: 
+			threadData=runSequenceMatchSet(seed, seed+permutations, testBase);
+		}
 		while(!dataOffloaded){
 			if(host.appendBusy()){ 
 				try {
