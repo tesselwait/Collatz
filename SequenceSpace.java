@@ -157,6 +157,75 @@ public class SequenceSpace {
 		}
 	}
 
+	public String reorderStrings(int iterations, double base, String x1){ // iteratively moves a '1' in an existing sequence to find closest ratio within sequence length
+		testBase=base;
+		String x = x1;
+		for(int h=0 ; h<iterations; h++) {
+			ArrayList<Integer> ones = new ArrayList<Integer>();
+			String bestShiftString = "";
+			for(int i=0; i<x.length(); i++) {
+				if(x.charAt(i)=='1')
+					ones.add(i);
+			}
+			double[] bestShift = new double[3];
+			bestShift[2]=Double.MAX_VALUE;
+			
+			for(int z: ones) {
+				ArrayList<Integer> moveable = new ArrayList<Integer>();
+				if(x.charAt(0)=='0'&& (x.charAt(1)=='0'||z==1))
+					moveable.add(0);
+				for(int i=1; i<x.length()-1; i++) {
+					if((x.charAt(i-1)=='0'||i-1==z) && x.charAt(i)=='0' && (x.charAt(i+1)=='0'||i+1==z))
+						moveable.add(i);
+				}
+				if((x.charAt(x.length()-2)=='0'||z==x.length()-2)&& x.charAt(x.length()-1)=='0')
+					moveable.add(x.length()-1);
+				
+
+				for(int y: moveable) {
+					String temp=x;
+					if(y==0) {
+						temp="1"+temp.substring(1);
+					}
+					else
+						if(y==temp.length()-1)
+							temp=temp.substring(0, temp.length()-2)+"1";
+						else
+							temp=temp.substring(0, y)+"1"+temp.substring(y+1);
+					if(z==0) {
+						temp="0"+temp.substring(1);
+					}
+					else
+						if(z==temp.length()-1)
+							temp=temp.substring(0, temp.length()-1)+"0";
+						else {
+							temp=temp.substring(0, z)+"0"+temp.substring(z+1);
+						}
+					
+					
+					if(bestShift[0]==1.0&&bestShift[1]==0.0) {
+						moveable.set(0, moveable.get(moveable.size()-1));
+					}
+					
+					double ratio=runString(temp);
+					if(Math.abs(1-ratio)<Math.abs(1-bestShift[2])) {
+						bestShift[0]=z;
+						bestShift[1]=y;
+						bestShift[2]=ratio;
+						bestShiftString=temp;
+						//System.out.println("begin: "+z+", end: "+y+", ratio: "+ratio);
+					}
+				}
+			}
+			System.out.println("Best -- begin: "+bestShift[0]+", end: "+bestShift[1]+", ratio: "+bestShift[2]);
+			System.out.println("old: "+x);
+			System.out.println("new: "+bestShiftString);
+			x=bestShiftString;
+		}
+		System.out.println();
+		return x;
+	}
+
 	public void scaleRunString(String base) {  // run a sequence string from a range of starting values in factors of 10
 		for(double i=100; i<100000000000000000000000000.0;i*=10) {
 			testBase=i;
@@ -168,5 +237,7 @@ public class SequenceSpace {
 		SequenceSpace test = new SequenceSpace();
 		//test.scaleRunString("0010000000000000000000001000100101001010001010010101010101010101001010100101010101010100101010101010101010101010101010100000100101001010010101001010101010101001010101010100101010101");
 		test.sequenceMatcher(100, 120, true, 10000, 1000000000.0); // (max 1s, max 0s, include all value pairs, sequences per section, base number to run collatz sequences)  // (306, 485)
+	//	String testString = "010101010010101010101010101010101010101010101010000010101001000000100000101001010000000001000010000010000001010100101010101010101010101010010010001001000010100101001001001001001010101010100101000001010100010100100000000100101010010101000101010000000010101010100101001010101010101010101010101001010101010000100010100101001010100101010101010101010101010101001010100101010101010101010101010101010100101001000001001010010101010101010100000001001010101010100101010101001010101001011010100000000000001000001001010100001001010101010010101010100101010101010101010010100100100010100100101010101010101010101010100000001000001010101001001010000101010101000000101010101000000010101000010100101000010100101010001010010010100001001010010101010101010101010010101010100101010101010101010000101010100000101000000010000100101010101010101010010101010101001000010101001000000100000001010101010101010010101010101010101000100101010101010101010101010100100101010100101010101001001010101000001001001001010010101010101001010100100000100101010101010101010001010000101010100101001010100101010101010101010010100101010100000000010100000010010101001001010010010101010101000100000101001010000101010101010100010001000101010101010100000000100101001010101010000101001001010101001010010101000000101010101001001010101010101010101010100010000010010010100101010010101001001010100101010101010101010101010101010101010101010101010010100101001010101001010010101010101010010010100101010101";
+	//	System.out.println(test.reorderStrings(100, Math.pow(10.0, 24), testString)); // (Number of reorders, testBase, sequence strin)
 	}
 }
