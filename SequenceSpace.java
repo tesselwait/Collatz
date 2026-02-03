@@ -217,14 +217,92 @@ public class SequenceSpace {
 					}
 				}
 			}
-			System.out.println("Best -- begin: "+bestShift[0]+", end: "+bestShift[1]+", ratio: "+bestShift[2]);
-			System.out.println("old: "+x);
-			System.out.println("new: "+bestShiftString);
+		//	System.out.println("Best -- begin: "+bestShift[0]+", end: "+bestShift[1]+", ratio: "+bestShift[2]);  
+		//	System.out.println("old: "+x);
+		//	System.out.println("new: "+bestShiftString);
 			x=bestShiftString;
 		}
 		System.out.println();
 		return x;
 	}
+
+	public String lowestSequence(int ones, int zeros) {
+		String a = "";
+		while(ones>0) {
+			a+="10";
+			ones--;
+			zeros--;
+		}
+		while(zeros>0) {
+			a+="0";
+			zeros--;
+		}
+		return a;
+	}
+	
+	public String highestSequence(int ones, int zeros) {
+		String a = "";
+		while(ones>0) {
+			a="10"+a;
+			ones--;
+			zeros--;
+		}
+		while(zeros>0) {
+			a="0"+a;
+			zeros--;
+		}
+		return a;
+	}
+	
+	
+	public void overUnderReorderSet(int ones, int zeros, int saveSetSize) {  // generates pairs where the highest/lowest string ratios are over and under 1.0 then applies reorder string and prints top X results
+		ArrayList<int[]> testPairs = new ArrayList<int[]>();
+		ArrayList<ArrayList<Object>> closestSet = new ArrayList<ArrayList<Object>>(); 
+		ArrayList<int[]> pairs = generateList(ones, zeros, true);
+		for(int[] pair: pairs) {
+			String strHigh = highestSequence(pair[0], pair[1]);
+			String strLow = lowestSequence(pair[0], pair[1]);
+			if(runString(strLow)<1 && runString(strHigh)>=1) {
+				testPairs.add(pair);
+			}
+		//	System.out.println(""+(pair[0]+pair[1])+": "+runString(str)+", "+str);
+		}
+		System.out.println(testPairs.size()+" Test Pairs");
+		for(int x=0; x<testPairs.size(); x++) {
+			System.out.print('*');
+		}
+		System.out.println();
+		for(int[] testPair: testPairs) {
+			ArrayList<Object> dataPair = new ArrayList<Object>();
+			String testString = reorderStrings(120, Math.pow(10.0,  24), highestSequence(testPair[0], testPair[1]));
+			double testRatio = runString(testString);
+			dataPair.add(testRatio);
+			dataPair.add(testString);
+			if(closestSet.size()<saveSetSize) {
+				closestSet.add(dataPair);
+			}
+			else {
+				for(int x=closestSet.size()-1; x>=0; x--) {
+					if(Math.abs(((Double) dataPair.get(0))-1.0) < Math.abs((Double) closestSet.get(x).get(0))-1.0){
+						if(x<closestSet.size()-1) {
+							closestSet.set(x+1, closestSet.get(x));
+						}
+						closestSet.set(x,  dataPair);
+					}
+				}
+			}
+
+			System.out.print('*');
+
+		}
+		System.out.println();
+		for(ArrayList<Object> closePair: closestSet) {
+			System.out.println("Ratio: "+closePair.get(0));
+			System.out.println("String: "+closePair.get(1));
+			System.out.println();
+		}
+	}
+	
 
 	public void scaleRunString(String base) {  // run a sequence string from a range of starting values in factors of 10
 		for(double i=100; i<100000000000000000000000000.0;i*=10) {
@@ -235,9 +313,10 @@ public class SequenceSpace {
 		
 	public static void main(String[] args) {
 		SequenceSpace test = new SequenceSpace();
+		test.overUnderReorderSet(500, 500, 5);  // produced a 0.9999999999999996 Ratio String with 10^24 base
 		//test.scaleRunString("0010000000000000000000001000100101001010001010010101010101010101001010100101010101010100101010101010101010101010101010100000100101001010010101001010101010101001010101010100101010101");
 		test.sequenceMatcher(100, 120, true, 10000, 1000000000.0); // (max 1s, max 0s, include all value pairs, sequences per section, base number to run collatz sequences)  // (306, 485)
 	//	String testString = "010101010010101010101010101010101010101010101010000010101001000000100000101001010000000001000010000010000001010100101010101010101010101010010010001001000010100101001001001001001010101010100101000001010100010100100000000100101010010101000101010000000010101010100101001010101010101010101010101001010101010000100010100101001010100101010101010101010101010101001010100101010101010101010101010101010100101001000001001010010101010101010100000001001010101010100101010101001010101001011010100000000000001000001001010100001001010101010010101010100101010101010101010010100100100010100100101010101010101010101010100000001000001010101001001010000101010101000000101010101000000010101000010100101000010100101010001010010010100001001010010101010101010101010010101010100101010101010101010000101010100000101000000010000100101010101010101010010101010101001000010101001000000100000001010101010101010010101010101010101000100101010101010101010101010100100101010100101010101001001010101000001001001001010010101010101001010100100000100101010101010101010001010000101010100101001010100101010101010101010010100101010100000000010100000010010101001001010010010101010101000100000101001010000101010101010100010001000101010101010100000000100101001010101010000101001001010101001010010101000000101010101001001010101010101010101010100010000010010010100101010010101001001010100101010101010101010101010101010101010101010101010010100101001010101001010010101010101010010010100101010101";
-	//	System.out.println(test.reorderStrings(100, Math.pow(10.0, 24), testString)); // (Number of reorders, testBase, sequence strin)
+	//	System.out.println(test.reorderStrings(100, Math.pow(10.0, 24), testString)); // (Number of reorders, testBase, sequence string)
 	}
 }
