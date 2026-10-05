@@ -1,6 +1,7 @@
 import java.util.*;
 import collatz.CollatzSequenceGenerator.SequenceTree;
 import collatz.CollatzSequenceGenerator.Node;
+import java.math.BigDecimal;
 public class CollatzClosestPermutationCombo extends Thread {
 	// Thinking of Collatz permutations as a sequence of ratio multiplications, the same sequence of permutations enacted on any two starting values(that results in the same
 	// sequence of "odd or even" permutations) should have an end result that is a similar fraction of the original seed value.  The deviations being caused by the "+1" component.
@@ -15,6 +16,7 @@ public class CollatzClosestPermutationCombo extends Thread {
 	// the sequence allowing search orders of magnitude higher in the number line per unit of compute.  The biggest obstacle thus far is the closest sequence best match was only about
 	// half of a 137 permutation sequence after testing up to ten trillion.
 	public double seed, permutations;
+	public BigDecimal seedDec;
 	public CollatzThreadHost host;
 	public String testBase, threadName;
 	public boolean dataOffloaded;
@@ -58,6 +60,18 @@ public class CollatzClosestPermutationCombo extends Thread {
 		dataOffloaded=false;
 		runMode=2;
 	}
+
+	public CollatzClosestPermutationCombo(BigDecimal a, double b, String testSequence, String c, CollatzThreadHost q) {
+		seedDec=a;
+		permutations=b;
+		threadName=c;
+		testBase=testSequence;
+		host=q;
+		gen=new Random();
+		threadData = new ArrayList<Object>();
+		dataOffloaded=false;
+		runMode=3;
+	}
 	
 	public ArrayList<Object> baseCompletesPermutationSequence(double baseNum, String sequence) {  // runs a test value against a move sequence until an odd/even mismatch.
 		double base = baseNum;                                                                // returns full sequence boolean and number of matched steps
@@ -90,11 +104,9 @@ public class CollatzClosestPermutationCombo extends Thread {
 					return data;
 				}
 			}
-			if(j==sequence.length()-1) {
-				data.add(true);
-				data.add(j);
-			}
 		}
+		data.add(true);
+		data.add(sequence.length()-1);
 		return data;
 	}
 	public ArrayList<Object> runSequenceMatchSet(double min, double max, String sequence){ // runs "baseCompletePermSeq(..)" over a range of values and returns best match
@@ -106,6 +118,69 @@ public class CollatzClosestPermutationCombo extends Thread {
 				System.out.println(threadName+": "+ x++ +" Billion");
 			ArrayList<Object> matcher = baseCompletesPermutationSequence(i, sequence);
 
+			if((Integer)matcher.get(1)>highest) {
+				farthestMatch = matcher;
+				farthestMatch.add(i);
+				highest=(Integer)matcher.get(1);
+			}
+		}
+		System.out.println("Base: "+farthestMatch.get(2)+", full String:"+farthestMatch.get(0)+", Permutations: "+farthestMatch.get(1));
+		return farthestMatch;
+	}
+
+	public ArrayList<Object> baseCompletesPermutationSequence(BigDecimal baseNum, String sequence) {  // BigDecimal
+		BigDecimal base = baseNum;                                                                
+		BigDecimal zero = new BigDecimal(0.0);
+		BigDecimal one = new BigDecimal(1.0);
+		BigDecimal two = new BigDecimal(2.0);
+		BigDecimal three = new BigDecimal(3.0);
+
+		ArrayList<Object> data = new ArrayList<Object>();
+		for(int j=0; j<sequence.length(); j++) {
+			if(sequence.charAt(j)=='1') {
+				if(base.remainder(two).compareTo(one)==0 && base.remainder(three).compareTo(zero)!=0) {  // remove 2nd boolean for speed increase on explorational runs
+				//	System.out.print(""+base+"-> ");
+					base = base.multiply(three).add(one);;
+				//	System.out.println("1-> X: "+base);
+				}
+				else {
+				//	System.out.println(j);
+					data.add(false);
+					data.add(j);
+					return data;
+				}
+			}
+			else
+			{
+				if(base.remainder(two).compareTo(zero)==0 && base.remainder(three).compareTo(zero)!=0) {  // remove 2nd boolean for speed increase on explorational runs
+					//System.out.print(""+base+"-> ");
+					base=base.divide(two);
+				//	System.out.println("0-> X: "+base);
+				}
+				else {
+					//System.out.println(j);
+					data.add(false);
+					data.add(j);
+					return data;
+				}
+			}
+		}
+		data.add(true);
+		data.add(sequence.length()-1);
+		return data;
+	}
+	public ArrayList<Object> runSequenceMatchSet(BigDecimal min, BigDecimal max, String sequence){ // BigDecimal
+		int highest=0;
+		int x=0;
+		ArrayList<Object> farthestMatch= new ArrayList<Object>();
+		BigDecimal zero = new BigDecimal(0.0);
+		BigDecimal one = new BigDecimal(1.0);
+		BigDecimal billion = new BigDecimal("10000000.0");
+		for(BigDecimal i=min; i.compareTo(max)<0; i=i.add(one)) {
+			if(i.remainder(billion).compareTo(zero)==0)
+				System.out.println(threadName+": "+ x++ +" * 10 million");
+			ArrayList<Object> matcher = baseCompletesPermutationSequence(i, sequence);
+		//	System.out.println("Matcher:"+matcher.get(0)+", "+matcher.get(1));
 			if((Integer)matcher.get(1)>highest) {
 				farthestMatch = matcher;
 				farthestMatch.add(i);
@@ -281,6 +356,9 @@ public class CollatzClosestPermutationCombo extends Thread {
 			break;
 		case 2:
 			threadData=runSequenceMatchSetFromTree(seed, seed+permutations, sequenceTree);
+			break;
+		case 3:
+			threadData=runSequenceMatchSet(seedDec, seedDec.add(new BigDecimal(permutations)), testBase);
 			break;
 		default: 
 			threadData=runSequenceMatchSet(seed, seed+permutations, testBase);
