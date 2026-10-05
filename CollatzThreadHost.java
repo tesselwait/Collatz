@@ -66,7 +66,7 @@ public class CollatzThreadHost {
 	}
 	
 	public static void main(String[] args) {
-		double totalTestStrings=10000000000.0;  // Total seed values to check against permutations
+		double totalTestStrings=1000000000.0;  // Total seed values to check against permutations.  Using BigDecimal: 1 billion == 5min, 10 billion == 50min. 20 cores.
 		double startIndex = 100000000000.0;  //  starting seed value in double range
 		BigDecimal startIndexArbitrary = new BigDecimal("1000000000000000000000000.0"); //  starting seed value for arbitrarily large numbers
 		int cores = Runtime.getRuntime().availableProcessors();
@@ -80,7 +80,7 @@ public class CollatzThreadHost {
 		
 		CollatzThreadHost crawler = new CollatzThreadHost(totalTestStrings, totalTestStrings/(1.0*cores));	
 		for(int i=0; i<cores; i++) {
-			CollatzClosestPermutationCombo object = new CollatzClosestPermutationCombo(0.0+i*crawler.threadSet, crawler.threadSet, tree, "Thread "+i, crawler);  // Tree version. runs about half as fast as single sequence crawler
+			//CollatzClosestPermutationCombo object = new CollatzClosestPermutationCombo(0.0+i*crawler.threadSet, crawler.threadSet, tree, "Thread "+i, crawler);  // Tree version. runs about half as fast as single sequence crawler
 
 			// -- Crawler for single permutation against arbitrarily large seed values.  Testing ranges beyond current exhaustively tested Collatz values which are beyond double range. BigDecimal slower than double.
 			CollatzClosestPermutationCombo object = new CollatzClosestPermutationCombo(startIndexArbitrary.add(new BigDecimal(i*crawler.threadSet)), crawler.threadSet, "10000010101010101010101010101010101010101010100000000000000000000000000000000000000000001000000000000000100000000000000000000100000000000101000101010101010101010101010101010101010101010101010101010101010101000101010101010100010101010101010101010100010101010101010101000101010101010101010101010101010101010101010101010100010101000001010101010101000101010100010101010000010101010101000100010101000101010100010101010100010101000101000101010101000101010100010000010101010101000101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010", "Thread "+i, crawler);
