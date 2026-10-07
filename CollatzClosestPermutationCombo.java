@@ -175,9 +175,9 @@ public class CollatzClosestPermutationCombo extends Thread {
 		ArrayList<Object> farthestMatch= new ArrayList<Object>();
 		BigDecimal zero = new BigDecimal(0.0);
 		BigDecimal one = new BigDecimal(1.0);
-		BigDecimal billion = new BigDecimal("10000000.0");
+		BigDecimal tenMillion = new BigDecimal("10000000.0");
 		for(BigDecimal i=min; i.compareTo(max)<0; i=i.add(one)) {
-			if(i.remainder(billion).compareTo(zero)==0)
+			if(i.remainder(tenMillion).compareTo(zero)==0)
 				System.out.println(threadName+": "+ x++ +" * 10 million");
 			ArrayList<Object> matcher = baseCompletesPermutationSequence(i, sequence);
 		//	System.out.println("Matcher:"+matcher.get(0)+", "+matcher.get(1));
