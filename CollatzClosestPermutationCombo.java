@@ -139,9 +139,9 @@ public class CollatzClosestPermutationCombo extends Thread {
 		for(int j=0; j<sequence.length(); j++) {
 			if(sequence.charAt(j)=='1') {
 				if(base.remainder(two).compareTo(one)==0 && base.remainder(three).compareTo(zero)!=0) {  // remove 2nd boolean for speed increase on explorational runs
-				//	System.out.print(""+base+"-> ");
+				//	System.out.print(""+baseNum+"-> ");
 					base = base.multiply(three).add(one);;
-				//	System.out.println("1-> X: "+base);
+				//	System.out.println("1-> X: "+baseNum);
 				}
 				else {
 				//	System.out.println(j);
@@ -153,9 +153,9 @@ public class CollatzClosestPermutationCombo extends Thread {
 			else
 			{
 				if(base.remainder(two).compareTo(zero)==0 && base.remainder(three).compareTo(zero)!=0) {  // remove 2nd boolean for speed increase on explorational runs
-					//System.out.print(""+base+"-> ");
+					//System.out.print(""+baseNum+"-> ");
 					base=base.divide(two);
-				//	System.out.println("0-> X: "+base);
+				//	System.out.println("0-> X: "+baseNum);
 				}
 				else {
 					//System.out.println(j);
