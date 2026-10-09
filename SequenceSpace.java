@@ -321,7 +321,7 @@ public class SequenceSpace {
 		}
 	}
 
-	public void dictionaryLensSearch(String base) { //runs a sequence in factors of 10 then runs string on an iteratively smaller in the style of a dictionary word search
+	public void dictionaryLensSearch(String base) { //runs a sequence in factors of 10 then runs string on an iteratively smaller range in the style of a dictionary word search
 		BigDecimal ten = new BigDecimal("10.0");  // finds best seed value for: baseSequence(seed) = 1
 		BigDecimal hundred = new BigDecimal("100.0");
 		BigDecimal thousand = new BigDecimal("1000.0");
