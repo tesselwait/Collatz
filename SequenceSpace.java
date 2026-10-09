@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import java.util.Collections;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Random;
 public class SequenceSpace {
 	//  Original sequence generator filtered all allowable sequences by closest to 1/1 ratio in 5 different lengths and then manually constructed
@@ -11,6 +13,12 @@ public class SequenceSpace {
 	public ArrayList<String> testSequences;
 	private double bestRatio;
 	private double testBase;
+	private BigDecimal testBaseArbitrary;
+	BigDecimal minusOne = new BigDecimal("-1.0");
+	BigDecimal zero = new BigDecimal("0.0");
+	BigDecimal one = new BigDecimal("1.0");
+	BigDecimal two = new BigDecimal("2.0");
+	BigDecimal three = new BigDecimal("3.0");
 	public SequenceSpace() {
 		testSequences=new ArrayList<String>();
 		bestRatio=Double.MAX_VALUE;
@@ -26,6 +34,18 @@ public class SequenceSpace {
 				seed/=2;
 		}
 		return seed/start;
+	}
+
+	public BigDecimal runStringArbitrary(String str) {
+		BigDecimal start = testBaseArbitrary;
+		BigDecimal seed = start;
+		for(int i=0; i<str.length(); i++) {
+			if(str.charAt(i)=='1')
+				seed=(seed.multiply(three)).add(one);
+			else
+				seed=seed.divide(two, testBaseArbitrary.precision(), RoundingMode.HALF_DOWN);
+		}
+		return seed.divide(start,  testBaseArbitrary.precision(), RoundingMode.HALF_DOWN);
 	}
 	
 	public ArrayList<int[]> generateList(int oneLimit, int zeroLimit, boolean includeAll) {  // generates lists of {ones, zeros} pairs within a specific ones/zeros ratio value
@@ -300,7 +320,77 @@ public class SequenceSpace {
 			System.out.println();
 		}
 	}
-	
+
+	public void dictionaryLensSearch(String base) { //runs a sequence in factors of 10 then runs string on an iteratively smaller in the style of a dictionary word search
+		BigDecimal ten = new BigDecimal("10.0");  // finds best seed value for: baseSequence(seed) = 1
+		BigDecimal hundred = new BigDecimal("100.0");
+		BigDecimal thousand = new BigDecimal("1000.0");
+		BigDecimal best = new BigDecimal("1000000.0");
+		BigDecimal testMin = new BigDecimal("100.0"); // Lower bound.  Very high lower bound currently throws bug.
+		BigDecimal ceiling = new BigDecimal("1000000000000000000000000000000.0"); // Upper bound currently set at 10^30
+		BigDecimal bestIndex = testMin.multiply(ten);
+		BigDecimal testIncrement;
+		// initial factors of 10 search
+		for(BigDecimal i=testMin; i.compareTo(ceiling)<0;i=i.multiply(ten)) {
+			testBaseArbitrary=i;
+			BigDecimal temp = one.subtract(runStringArbitrary(base)).abs();
+			if(temp.compareTo(best)<0) {
+				best = temp;
+				bestIndex=i;
+			}
+		}
+		System.out.println("Best Index: "+bestIndex);
+		// Iterative one decimal decrease hop searches
+		testIncrement = bestIndex.divide(ten);
+		BigDecimal testMax = testMin.add(testIncrement.multiply(hundred));
+		for(testMin = bestIndex.divide(ten); testIncrement.compareTo(ten)>=0; testIncrement=testIncrement.divide(ten)) {
+			System.out.println("Test min:   "+testMin+", Test Increment: "+testIncrement+", Test max: "+testMax);
+			for(BigDecimal i=testMin; i.compareTo(testMax)<0;i=i.add(testIncrement)) {
+				testBaseArbitrary=i;
+				BigDecimal temp = one.subtract(runStringArbitrary(base)).abs();
+				if(temp.compareTo(best)<0) {
+					best = temp;
+					bestIndex=i;
+				}
+			}
+			System.out.println("best Index: "+bestIndex+", best diff: "+best.toPlainString());
+			testMin = bestIndex.subtract(testIncrement);
+			testMax = testMin.add(testIncrement.multiply(hundred));
+		}
+		// Single hop search after reaching 10s
+		BigDecimal increment;
+		testBaseArbitrary=bestIndex.add(one);
+		BigDecimal test = one.subtract(runStringArbitrary(base)).abs();
+		testBaseArbitrary=bestIndex.subtract(one);
+		BigDecimal test2 = one.subtract(runStringArbitrary(base)).abs();
+		if(test.compareTo(best)<0 || test2.compareTo(best)<0) {
+			BigDecimal last;
+			if(test.compareTo(test2)<0) {
+				increment=one;
+				last=test;
+				testBaseArbitrary=bestIndex.add(one);
+			}
+			else {
+				increment=minusOne;
+				last=test2;
+			}
+			testBaseArbitrary = testBaseArbitrary.add(increment);
+			test = one.subtract(runStringArbitrary(base)).abs();
+			while(test.compareTo(last)<0) {
+				testBaseArbitrary = testBaseArbitrary.add(increment);
+				last=test;
+
+				test = one.subtract(runStringArbitrary(base)).abs();
+			}
+			test=last;
+			testBaseArbitrary = testBaseArbitrary.subtract(increment);
+			System.out.println("Base: "+testBaseArbitrary+", ratio: "+runStringArbitrary(base));
+		}
+		else {
+			testBaseArbitrary=bestIndex;
+			System.out.println("Base: "+testBaseArbitrary+", ratio: "+runStringArbitrary(base));
+		}
+	}
 
 	public void scaleRunString(String base) {  // run a sequence string from a range of starting values in factors of 10
 		for(double i=100; i<100000000000000000000000000.0;i*=10) {
@@ -311,7 +401,8 @@ public class SequenceSpace {
 		
 	public static void main(String[] args) {
 		SequenceSpace test = new SequenceSpace();
-		test.overUnderReorderSet(500, 500, 5);  // produced a 0.9999999999999996 Ratio String with 10^24 base
+	//	test.overUnderReorderSet(500, 500, 5);  // produced a 0.9999999999999996 Ratio String with 10^24 base
+		test.dictionaryLensSearch("0100000000000000000000000010101010101010101010101010101010101010101010101010101010101010101010101010101010"); // Base: 970158218.00000000, ratio: 0.99999999999549472
 	//  test.scaleRunString("0010000000000000000000001000100101001010001010010101010101010101001010100101010101010100101010101010101010101010101010100000100101001010010101001010101010101001010101010100101010101");
 	//	test.sequenceMatcher(100, 120, true, 10000, 1000000000.0); // (max 1s, max 0s, include all value pairs, sequences per section, base number to run collatz sequences)  // (306, 485)
 	//	String testString = "010101010010101010101010101010101010101010101010000010101001000000100000101001010000000001000010000010000001010100101010101010101010101010010010001001000010100101001001001001001010101010100101000001010100010100100000000100101010010101000101010000000010101010100101001010101010101010101010101001010101010000100010100101001010100101010101010101010101010101001010100101010101010101010101010101010100101001000001001010010101010101010100000001001010101010100101010101001010101001011010100000000000001000001001010100001001010101010010101010100101010101010101010010100100100010100100101010101010101010101010100000001000001010101001001010000101010101000000101010101000000010101000010100101000010100101010001010010010100001001010010101010101010101010010101010100101010101010101010000101010100000101000000010000100101010101010101010010101010101001000010101001000000100000001010101010101010010101010101010101000100101010101010101010101010100100101010100101010101001001010101000001001001001010010101010101001010100100000100101010101010101010001010000101010100101001010100101010101010101010010100101010100000000010100000010010101001001010010010101010101000100000101001010000101010101010100010001000101010101010100000000100101001010101010000101001001010101001010010101000000101010101001001010101010101010101010100010000010010010100101010010101001001010100101010101010101010101010101010101010101010101010010100101001010101001010010101010101010010010100101010101";
