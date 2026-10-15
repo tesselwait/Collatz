@@ -242,7 +242,7 @@ public class SequenceSpace {
 		//	System.out.println("new: "+bestShiftString);
 			x=bestShiftString;
 		}
-		System.out.println();
+		//System.out.println();
 		return x;
 	}
 
