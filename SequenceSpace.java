@@ -376,7 +376,7 @@ public class SequenceSpace {
 			}
 			testBaseArbitrary = testBaseArbitrary.add(increment);
 			test = one.subtract(runStringArbitrary(base)).abs();
-			while(test.compareTo(last)<0) {
+			while(test.compareTo(last)<0 && testBaseArbitrary.compareTo(one)>-1) {
 				testBaseArbitrary = testBaseArbitrary.add(increment);
 				last=test;
 
